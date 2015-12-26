@@ -1,4 +1,5 @@
-<?php namespace Morilog\EloquentSti\Models;
+<?php 
+namespace Morilog\EloquentSti\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,20 +10,17 @@ abstract class SingleTableInheritableModel extends Model implements SingleTableI
     {
         parent::__construct($attributes);
 
-
         if ((new \ReflectionClass(get_class($this)))->isInstantiable()) {
             $this->setAttribute($this->getStiClassField(), get_class($this));
         }
-
     }
 
     public function newQuery($excludeDeleted = true)
     {
         $builder = parent::newQuery($excludeDeleted);
 
-
         if (get_class($this) !== $this->getStiBaseClass()) {
-            $builder->orWhere($this->getStiClassField(), '=', get_class($this));
+            $builder->where($this->getStiClassField(), '=', get_class($this));
         }
 
 
@@ -41,8 +39,9 @@ abstract class SingleTableInheritableModel extends Model implements SingleTableI
 
 
             return $instance;
-        } else {
-            return parent::newFromBuilder($attributes, $connection);
-        }
+        } 
+           
+
+        return parent::newFromBuilder($attributes, $connection);
     }
 }
